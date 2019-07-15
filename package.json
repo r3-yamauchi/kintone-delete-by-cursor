@@ -1,6 +1,6 @@
 {
   "name": "kintone-delete-by-cursor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "delete records from a kintone app using cursor api",
   "bin": {
     "kintone-delete-by-cursor": "bin/cli.js"
