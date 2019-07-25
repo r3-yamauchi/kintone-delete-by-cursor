@@ -28,8 +28,7 @@ export class Util {
     this.domain = domain;
     this.appId = appId;
     this.guestSpaceId = guestSpaceId;
-    const target = `${userName}:${password}`;
-    this.auth = Buffer.alloc(target.length, target).toString("base64");
+    this.auth = Buffer.from(`${userName}:${password}`).toString('base64');
   }
 
   public getRecordIDs(records: []): number[] {
