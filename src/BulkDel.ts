@@ -40,7 +40,13 @@ export class BulkDel {
     }
   }
 
-  private async bulkRequest(bulkIds: string[][]): Promise<object[]> {
+  private async bulkRequest(
+    bulkIds: string[][]
+  ): Promise<{
+    results: Array<{
+      [K: string]: any;
+    }>;
+  }> {
     const requests: BulkDelRequests = [];
     bulkIds.forEach(ids => {
       requests.push({

@@ -2,7 +2,10 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.1.2 (2020-02-28)
+
+fix: app in guest space
+
 ### 1.1.1 (2020-02-28)
 
 use `@kintone/rest-api-client`
-

@@ -9,29 +9,34 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Util = void 0;
 const rest_api_client_1 = require("@kintone/rest-api-client");
 class Util {
     constructor(domain, appId, guestSpaceId, userName, password) {
         this.domain = domain;
         this.appId = appId;
-        this.guestSpaceId = guestSpaceId;
+        this.guestSpaceId =
+            guestSpaceId && guestSpaceId !== "" && guestSpaceId !== "0"
+                ? guestSpaceId
+                : undefined;
         this.client = new rest_api_client_1.KintoneRestAPIClient({
             baseUrl: `https://${this.domain}`,
             auth: {
                 username: userName,
                 password: password
-            }
+            },
+            guestSpaceId: this.guestSpaceId
         });
     }
     getCursor(queryString) {
         return __awaiter(this, void 0, void 0, function* () {
-            const foo = yield this.client.record.createCursor({
+            const cur = yield this.client.record.createCursor({
                 app: this.appId,
                 fields: ["$id"],
                 query: queryString,
                 size: 500
             });
-            return foo;
+            return cur;
         });
     }
     getRecordIDs(records) {
@@ -47,10 +52,9 @@ class Util {
         return ids;
     }
     getApiPath(api) {
-        return `/k/v1/${api}.json`;
-        // return this.guestSpaceId
-        //   ? `/k/guest/${this.guestSpaceId}/v1/${api}.json`
-        //   : `/k/v1/${api}.json`;
+        return this.guestSpaceId
+            ? `/k/guest/${this.guestSpaceId}/v1/${api}.json`
+            : `/k/v1/${api}.json`;
     }
 }
 exports.Util = Util;

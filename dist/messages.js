@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getBoundMessage = exports.getMessage = void 0;
 const messages = {
     Q_Domain: {
         en: "Input your Kintone subdomain (example.cybozu.com):",

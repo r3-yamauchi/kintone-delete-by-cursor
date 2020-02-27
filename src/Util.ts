@@ -30,7 +30,7 @@ declare type Record = {
 
 export class Util {
   public appId: string;
-  public guestSpaceId: string;
+  public guestSpaceId?: string;
   private domain: string;
   public client: KintoneRestAPIClient;
 
@@ -43,24 +43,29 @@ export class Util {
   ) {
     this.domain = domain;
     this.appId = appId;
-    this.guestSpaceId = guestSpaceId;
+    this.guestSpaceId =
+      guestSpaceId && guestSpaceId !== "" && guestSpaceId !== "0"
+        ? guestSpaceId
+        : undefined;
+
     this.client = new KintoneRestAPIClient({
       baseUrl: `https://${this.domain}`,
       auth: {
         username: userName,
         password: password
-      }
+      },
+      guestSpaceId: this.guestSpaceId
     });
   }
 
   public async getCursor(queryString: string): Promise<Cursor> {
-    const foo = await this.client.record.createCursor({
+    const cur = await this.client.record.createCursor({
       app: this.appId,
       fields: ["$id"],
       query: queryString,
       size: 500
     });
-    return foo;
+    return cur;
   }
 
   public getRecordIDs(records: Record[]): string[] {
@@ -77,9 +82,8 @@ export class Util {
   }
 
   public getApiPath(api: string): string {
-    return `/k/v1/${api}.json`;
-    // return this.guestSpaceId
-    //   ? `/k/guest/${this.guestSpaceId}/v1/${api}.json`
-    //   : `/k/v1/${api}.json`;
+    return this.guestSpaceId
+      ? `/k/guest/${this.guestSpaceId}/v1/${api}.json`
+      : `/k/v1/${api}.json`;
   }
 }

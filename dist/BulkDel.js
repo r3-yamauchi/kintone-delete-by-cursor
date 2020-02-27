@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.BulkDel = void 0;
 class BulkDel {
     constructor(util) {
         this.util = util;
