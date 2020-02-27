@@ -1,12 +1,11 @@
-import request from "request";
 import { Util } from "./Util";
 
 type BulkDelRequests = Array<{
   method: string;
   api: string;
   payload: {
-    app: number;
-    ids: number[];
+    app: string;
+    ids: string[];
   };
 }>;
 
@@ -16,8 +15,8 @@ export class BulkDel {
     this.util = util;
   }
 
-  public async bulkDelete(ids: number[]): Promise<void> {
-    let bulkIds: number[][] = [];
+  public async bulkDelete(ids: string[]): Promise<void> {
+    let bulkIds: string[][] = [];
     let start = 0;
     let end = 0;
     while (ids.length > end) {
@@ -41,33 +40,24 @@ export class BulkDel {
     }
   }
 
-  private bulkRequest(bulkIds: number[][]): Promise<[]> {
-    return new Promise<[]>((resolve, reject) => {
-      const requests: BulkDelRequests = [];
-      bulkIds.forEach(ids => {
-        requests.push({
-          method: "DELETE",
-          api: this.util.getApiPath("records"),
-          payload: {
-            app: this.util.appId,
-            ids
-          }
-        });
-      });
-      const options = this.util.createRequestOption({
-        method: "POST",
-        api: "bulkRequest",
-        body: {
-          requests
+  private async bulkRequest(bulkIds: string[][]): Promise<object[]> {
+    const requests: BulkDelRequests = [];
+    bulkIds.forEach(ids => {
+      requests.push({
+        method: "DELETE",
+        api: this.util.getApiPath("records"),
+        payload: {
+          app: this.util.appId,
+          ids
         }
-      });
-      request(options, (error: any, response: any, body: any) => {
-        if (error) {
-          console.log("error: ", JSON.stringify(error, null, 2));
-          console.log("response: ", JSON.stringify(response, null, 2));
-        }
-        resolve(body.results);
       });
     });
+
+    try {
+      return await this.util.client.bulkRequest({ requests });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
   }
 }

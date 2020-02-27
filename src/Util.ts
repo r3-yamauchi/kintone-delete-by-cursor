@@ -1,40 +1,72 @@
-interface RequestInput {
-  method: string;
-  api: string;
-  body: object;
-}
+import { KintoneRestAPIClient } from "@kintone/rest-api-client";
 
-interface RequestOption {
-  method: string;
-  uri: string;
-  body: object;
-  headers: object;
-  json: boolean;
-}
+export declare type App = {
+  appId: string;
+  code: string;
+  name: string;
+  description: string;
+  spaceId: string | null;
+  threadId: string | null;
+  createdAt: string;
+  creator: {
+    code: string;
+    name: string;
+  };
+  modifiedAt: string;
+  modifier: {
+    code: string;
+    name: string;
+  };
+};
+
+export declare type Cursor = {
+  id: string;
+  totalCount: string;
+};
+
+declare type Record = {
+  [fieldCode: string]: any;
+};
 
 export class Util {
-  public appId: number;
+  public appId: string;
+  public guestSpaceId: string;
   private domain: string;
-  private guestSpaceId: number;
-  private auth: string;
+  public client: KintoneRestAPIClient;
 
   constructor(
     domain: string,
-    appId: number,
-    guestSpaceId: number,
+    appId: string,
+    guestSpaceId: string,
     userName: string,
     password: string
   ) {
     this.domain = domain;
     this.appId = appId;
     this.guestSpaceId = guestSpaceId;
-    this.auth = Buffer.from(`${userName}:${password}`).toString('base64');
+    this.client = new KintoneRestAPIClient({
+      baseUrl: `https://${this.domain}`,
+      auth: {
+        username: userName,
+        password: password
+      }
+    });
   }
 
-  public getRecordIDs(records: []): number[] {
-    const ids: number[] = [];
+  public async getCursor(queryString: string): Promise<Cursor> {
+    const foo = await this.client.record.createCursor({
+      app: this.appId,
+      fields: ["$id"],
+      query: queryString,
+      size: 500
+    });
+    return foo;
+  }
+
+  public getRecordIDs(records: Record[]): string[] {
+    const ids: string[] = [];
     records.forEach(item => {
-      // tslint:disable-next-line: no-string-literal
+      // eslint-disable-next-line dot-notation
       const id = item["$id"]["value"];
       if (id) {
         ids.push(id);
@@ -44,27 +76,10 @@ export class Util {
     return ids;
   }
 
-  public createRequestOption(input: RequestInput): RequestOption {
-    return {
-      method: input.method,
-      uri: this.getApiUrl(input.api),
-      body: input.body,
-      headers: {
-        "X-Requested-With": "XMLHttpRequest",
-        "X-Cybozu-Authorization": this.auth,
-        "Content-Type": "application/json"
-      },
-      json: true
-    };
-  }
-
   public getApiPath(api: string): string {
-    return this.guestSpaceId
-      ? `/k/guest/${this.guestSpaceId}/v1/${api}.json`
-      : `/k/v1/${api}.json`;
-  }
-
-  public getApiUrl(api: string): string {
-    return `https://${this.domain}${this.getApiPath(api)}`;
+    return `/k/v1/${api}.json`;
+    // return this.guestSpaceId
+    //   ? `/k/guest/${this.guestSpaceId}/v1/${api}.json`
+    //   : `/k/v1/${api}.json`;
   }
 }
