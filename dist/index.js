@@ -44,7 +44,7 @@ const deleteRecords = (util, cursorID) => __awaiter(void 0, void 0, void 0, func
     for (;;) {
         // カーソルを使用してレコードを取得
         const result = yield util.client.record.getRecordsByCursor({
-            id: cursorID
+            id: cursorID,
         });
         // レコードIDの一覧を蓄積
         ids.push(...util.getRecordIDs(result.records));
@@ -131,7 +131,7 @@ exports.run = run;
 //   "password",
 //   "$id < 23456",
 //   {
-//     lang: "ja"
+//     lang: "ja",
 //   }
 // ).then(() => {
 //   console.log("finish");

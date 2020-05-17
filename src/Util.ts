@@ -52,9 +52,9 @@ export class Util {
       baseUrl: `https://${this.domain}`,
       auth: {
         username: userName,
-        password: password
+        password: password,
       },
-      guestSpaceId: this.guestSpaceId
+      guestSpaceId: this.guestSpaceId,
     });
   }
 
@@ -63,14 +63,14 @@ export class Util {
       app: this.appId,
       fields: ["$id"],
       query: queryString,
-      size: 500
+      size: 500,
     });
     return cur;
   }
 
   public getRecordIDs(records: Record[]): string[] {
     const ids: string[] = [];
-    records.forEach(item => {
+    records.forEach((item) => {
       // eslint-disable-next-line dot-notation
       const id = item["$id"]["value"];
       if (id) {
@@ -79,11 +79,5 @@ export class Util {
     });
     // console.log(ids);
     return ids;
-  }
-
-  public getApiPath(api: string): string {
-    return this.guestSpaceId
-      ? `/k/guest/${this.guestSpaceId}/v1/${api}.json`
-      : `/k/v1/${api}.json`;
   }
 }

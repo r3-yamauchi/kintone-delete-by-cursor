@@ -17,7 +17,7 @@ export const inquireParams = ({
   domain,
   appid,
   query,
-  lang
+  lang,
 }: Params) => {
   const m = getBoundMessage(lang);
   const questions: inquirer.Question[] = [
@@ -27,7 +27,7 @@ export const inquireParams = ({
       name: "domain",
       default: domain,
       when: () => !domain,
-      validate: (v: string) => !!v
+      validate: (v: string) => !!v,
     },
     {
       type: "input",
@@ -35,7 +35,7 @@ export const inquireParams = ({
       message: m("Q_UserName"),
       default: username,
       when: () => !username,
-      validate: (v: string) => !!v
+      validate: (v: string) => !!v,
     },
     {
       type: "password",
@@ -43,7 +43,7 @@ export const inquireParams = ({
       message: m("Q_Password"),
       default: password,
       when: () => !password,
-      validate: (v: string) => !!v
+      validate: (v: string) => !!v,
     },
     {
       type: "input",
@@ -51,19 +51,19 @@ export const inquireParams = ({
       message: m("Q_AppId"),
       default: appid,
       when: () => !appid,
-      validate: (v: string) => !!v
+      validate: (v: string) => !!v,
     },
     {
       type: "input",
       name: "query",
       message: m("Q_QueryString"),
-      default: query
-    }
+      default: query,
+    },
   ];
 
   return inquirer
     .prompt(questions)
-    .then(answers =>
+    .then((answers) =>
       Object.assign({ username, password, domain, appid, query }, answers)
     );
 };

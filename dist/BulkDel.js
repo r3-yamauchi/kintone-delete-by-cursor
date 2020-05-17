@@ -40,18 +40,19 @@ class BulkDel {
     bulkRequest(bulkIds) {
         return __awaiter(this, void 0, void 0, function* () {
             const requests = [];
-            bulkIds.forEach(ids => {
+            bulkIds.forEach((ids) => {
                 requests.push({
                     method: "DELETE",
-                    api: this.util.getApiPath("records"),
+                    endpointName: "records",
                     payload: {
                         app: this.util.appId,
-                        ids
-                    }
+                        ids,
+                    },
                 });
             });
             try {
-                return yield this.util.client.bulkRequest({ requests });
+                const res = yield this.util.client.bulkRequest({ requests });
+                return res;
             }
             catch (err) {
                 console.error(err);

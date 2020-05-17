@@ -12,7 +12,7 @@ const deleteRecords = async (util: Util, cursorID: string): Promise<number> => {
   for (;;) {
     // カーソルを使用してレコードを取得
     const result = await util.client.record.getRecordsByCursor({
-      id: cursorID
+      id: cursorID,
     });
     // レコードIDの一覧を蓄積
     ids.push(...util.getRecordIDs(result.records));
@@ -114,7 +114,7 @@ export async function run(
 //   "password",
 //   "$id < 23456",
 //   {
-//     lang: "ja"
+//     lang: "ja",
 //   }
 // ).then(() => {
 //   console.log("finish");

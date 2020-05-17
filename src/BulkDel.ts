@@ -1,8 +1,15 @@
 import { Util } from "./Util";
 
+export declare type EndpointName =
+  | "record"
+  | "records"
+  | "record/status"
+  | "records/status"
+  | "record/assignees";
+
 type BulkDelRequests = Array<{
   method: string;
-  api: string;
+  endpointName: EndpointName;
   payload: {
     app: string;
     ids: string[];
@@ -48,19 +55,20 @@ export class BulkDel {
     }>;
   }> {
     const requests: BulkDelRequests = [];
-    bulkIds.forEach(ids => {
+    bulkIds.forEach((ids) => {
       requests.push({
         method: "DELETE",
-        api: this.util.getApiPath("records"),
+        endpointName: "records",
         payload: {
           app: this.util.appId,
-          ids
-        }
+          ids,
+        },
       });
     });
 
     try {
-      return await this.util.client.bulkRequest({ requests });
+      const res = await this.util.client.bulkRequest({ requests });
+      return res;
     } catch (err) {
       console.error(err);
       throw err;
